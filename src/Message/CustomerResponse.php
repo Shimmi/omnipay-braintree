@@ -15,4 +15,14 @@ class CustomerResponse extends Response
 
         return null;
     }
+
+    /**
+     * Get customer reference (ID).
+     *
+     * @return string Customer reference
+     */
+    public function getCustomerReference()
+    {
+        return $this->data->customer->id;
+    }
 }

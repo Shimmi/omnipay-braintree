@@ -150,6 +150,18 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * Create Card.
+     *
+     * @param array $parameters
+     *
+     * @return Message\CreateCardRequest
+     */
+    public function createCard(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Braintree\Message\CreateCardRequest', $parameters);
+    }
+
+    /**
      * @param array $parameters
      * @return Message\PurchaseRequest
      */

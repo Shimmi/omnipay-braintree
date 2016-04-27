@@ -2,7 +2,7 @@
 
 namespace Omnipay\Braintree\Message;
 
-use Braintree_Gateway;
+use \Braintree\Gateway;
 use Guzzle\Http\ClientInterface;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
@@ -15,7 +15,7 @@ use Omnipay\Common\Message\AbstractRequest as BaseAbstractRequest;
 abstract class AbstractRequest extends BaseAbstractRequest
 {
     /**
-     * @var \Braintree_Gateway
+     * @var Gateway
      */
     protected $braintree;
 
@@ -24,9 +24,9 @@ abstract class AbstractRequest extends BaseAbstractRequest
      *
      * @param ClientInterface $httpClient  A Guzzle client to make API calls with
      * @param HttpRequest     $httpRequest A Symfony HTTP request object
-     * @param Braintree_Gateway $braintree The Braintree Gateway
+     * @param Gateway $braintree The Braintree Gateway
      */
-    public function __construct(ClientInterface $httpClient, HttpRequest $httpRequest, Braintree_Gateway $braintree)
+    public function __construct(ClientInterface $httpClient, HttpRequest $httpRequest, Gateway $braintree)
     {
         $this->braintree = $braintree;
 
@@ -130,12 +130,35 @@ abstract class AbstractRequest extends BaseAbstractRequest
         return $this->setParameter('customerData', $value);
     }
 
+    /**
+     * @return string|null
+     * @deprecated Use getCustomerReference() instead.
+     */
     public function getCustomerId()
     {
         return $this->getParameter('customerId');
     }
 
     public function setCustomerId($value)
+    {
+        return $this->setParameter('customerId', $value);
+    }
+
+    /**
+     * Get customer reference.
+     *
+     * As stated in Omnipay conventions:
+     * "transactionReference is the Payment Gateway’s reference to the transaction.""
+     * @see http://omnipay.thephpleague.com/gateways/build-your-own/
+     *
+     * @return string|null
+     */
+    public function getCustomerReference()
+    {
+        return $this->getParameter('customerId');
+    }
+
+    public function setCustomerReference($value)
     {
         return $this->setParameter('customerId', $value);
     }
@@ -374,8 +397,12 @@ abstract class AbstractRequest extends BaseAbstractRequest
             return array();
         }
 
-        return array(
-            'billing' => array(
+        $data = array(
+            'customerId' => $this->getCustomerReference(),
+            'number' => $card->getNumber(),
+            'expirationMonth' => $card->getExpiryMonth(),
+            'expirationYear' => $card->getExpiryYear(),
+            'billingAddress' => array(
                 'company' => $card->getBillingCompany(),
                 'firstName' => $card->getBillingFirstName(),
                 'lastName' => $card->getBillingLastName(),
@@ -386,18 +413,13 @@ abstract class AbstractRequest extends BaseAbstractRequest
                 'region' => $card->getBillingState(),
                 'countryName' => $card->getBillingCountry(),
             ),
-            'shipping' => array(
-                'company' => $card->getShippingCompany(),
-                'firstName' => $card->getShippingFirstName(),
-                'lastName' => $card->getShippingLastName(),
-                'streetAddress' => $card->getShippingAddress1(),
-                'extendedAddress' =>  $card->getShippingAddress2(),
-                'locality' => $card->getShippingCity(),
-                'postalCode' => $card->getShippingPostcode(),
-                'region' => $card->getShippingState(),
-                'countryName' => $card->getShippingCountry(),
-            )
         );
+
+        if ($card->getCvv()) {
+            $data['cvv'] = $card->getCvv();
+        }
+
+        return $data;
     }
 
     /**

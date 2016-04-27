@@ -39,8 +39,7 @@ class AuthorizeRequestTest extends TestCase
         $this->assertSame('abc123', $data['paymentMethodNonce']);
         $this->assertSame('10.00', $data['amount']);
         $this->assertSame('684', $data['orderId']);
-        $this->assertSame('Kayla', $data['billing']['firstName']);
-        $this->assertSame('League', $data['shipping']['company']);
+        $this->assertSame('Kayla', $data['billingAddress']['firstName']);
         $this->assertFalse($data['options']['submitForSettlement']);
         $this->assertFalse($data['taxExempt']);
 

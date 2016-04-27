@@ -84,6 +84,9 @@ class AbstractRequestTest extends TestCase
     public function testCardData()
     {
         $card = array(
+          'number' => '4111111111111111',
+          'expiryMonth' => 5,
+          'expiryYear' => 2019,
           'firstName' => 'Example',
           'lastName' => 'User',
           'company' => 'League',
@@ -105,26 +108,18 @@ class AbstractRequestTest extends TestCase
         $this->request->setCard($card);
         $data = $this->request->getCardData();
 
-        $this->assertSame($card['firstName'], $data['billing']['firstName']);
-        $this->assertSame($card['lastName'], $data['billing']['lastName']);
-        $this->assertSame($card['company'], $data['billing']['company']);
-        $this->assertSame($card['billingAddress1'], $data['billing']['streetAddress']);
-        $this->assertSame($card['billingAddress2'], $data['billing']['extendedAddress']);
-        $this->assertSame($card['billingCity'], $data['billing']['locality']);
-        $this->assertSame($card['billingPostcode'], $data['billing']['postalCode']);
-        $this->assertSame($card['billingState'], $data['billing']['region']);
-        $this->assertSame($card['billingCountry'], $data['billing']['countryName']);
-
-        $this->assertSame($card['firstName'], $data['shipping']['firstName']);
-        $this->assertSame($card['lastName'], $data['shipping']['lastName']);
-        $this->assertSame($card['company'], $data['shipping']['company']);
-        $this->assertSame($card['shippingAddress1'], $data['shipping']['streetAddress']);
-        $this->assertSame($card['shippingAddress2'], $data['shipping']['extendedAddress']);
-        $this->assertSame($card['shippingCity'], $data['shipping']['locality']);
-        $this->assertSame($card['shippingPostcode'], $data['shipping']['postalCode']);
-        $this->assertSame($card['shippingState'], $data['shipping']['region']);
-        $this->assertSame($card['shippingCountry'], $data['shipping']['countryName']);
-
+        $this->assertSame($card['number'], $data['number']);
+        $this->assertSame($card['expiryMonth'], $data['expirationMonth']);
+        $this->assertSame($card['expiryYear'], $data['expirationYear']);
+        $this->assertSame($card['firstName'], $data['billingAddress']['firstName']);
+        $this->assertSame($card['lastName'], $data['billingAddress']['lastName']);
+        $this->assertSame($card['company'], $data['billingAddress']['company']);
+        $this->assertSame($card['billingAddress1'], $data['billingAddress']['streetAddress']);
+        $this->assertSame($card['billingAddress2'], $data['billingAddress']['extendedAddress']);
+        $this->assertSame($card['billingCity'], $data['billingAddress']['locality']);
+        $this->assertSame($card['billingPostcode'], $data['billingAddress']['postalCode']);
+        $this->assertSame($card['billingState'], $data['billingAddress']['region']);
+        $this->assertSame($card['billingCountry'], $data['billingAddress']['countryName']);
     }
 
     public function testOptionData()
