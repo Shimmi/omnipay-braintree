@@ -2,9 +2,6 @@
 
 namespace Omnipay\Braintree;
 
-use Braintree_Configuration;
-use Braintree_Digest;
-use Braintree_Version;
 use Omnipay\Tests\GatewayTestCase;
 
 class GatewayTest extends GatewayTestCase
@@ -154,10 +151,10 @@ class GatewayTest extends GatewayTestCase
 
     public function testParseNotification()
     {
-        if(Braintree_Version::MAJOR >= 3) {
+        if(\Braintree_Version::MAJOR >= 3) {
             $xml = '<notification></notification>';
             $payload = base64_encode($xml);
-            $signature = Braintree_Digest::hexDigestSha1(Braintree_Configuration::privateKey(), $payload);
+            $signature = \Braintree_Digest::hexDigestSha1(\Braintree_Configuration::privateKey(), $payload);
             $gatewayMock = $this->buildGatewayMock($payload);
             $gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest(), $gatewayMock);
             $params = array(
@@ -165,11 +162,11 @@ class GatewayTest extends GatewayTestCase
                 'bt_payload' => $payload
             );
             $request = $gateway->parseNotification($params);
-            $this->assertInstanceOf('\Braintree\WebhookNotification', $request);
+            $this->assertInstanceOf('\Braintree_WebhookNotification', $request);
         } else {
             $xml = '<notification><subject></subject></notification>';
             $payload = base64_encode($xml);
-            $signature = Braintree_Digest::hexDigestSha1(Braintree_Configuration::privateKey(), $payload);
+            $signature = \Braintree_Digest::hexDigestSha1(\Braintree_Configuration::privateKey(), $payload);
             $gatewayMock = $this->buildGatewayMock($payload);
             $gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest(), $gatewayMock);
             $params = array(
@@ -177,18 +174,18 @@ class GatewayTest extends GatewayTestCase
                 'bt_payload' => $payload
             );
             $request = $gateway->parseNotification($params);
-            $this->assertInstanceOf('\Braintree\WebhookNotification', $request);
+            $this->assertInstanceOf('\Braintree_WebhookNotification', $request);
         }
     }
 
     /**
      * @param $payload
      *
-     * @return \Braintree\Gateway
+     * @return \Braintree_Gateway
      */
     protected function buildGatewayMock($payload)
     {
-        $configuration = $this->getMockBuilder('Braintree_Configuration')
+        $configuration = $this->getMockBuilder('\Braintree_Configuration')
             ->disableOriginalConstructor()
             ->setMethods(array(
                 'assertHasAccessTokenOrKeys'
@@ -202,7 +199,7 @@ class GatewayTest extends GatewayTestCase
 
         $configuration->setPublicKey($payload);
 
-        Braintree_Configuration::$global = $configuration;
-        return Braintree_Configuration::gateway();
+        \Braintree_Configuration::$global = $configuration;
+        return \Braintree_Configuration::gateway();
     }
 }
