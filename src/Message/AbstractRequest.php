@@ -15,7 +15,7 @@ use Omnipay\Common\Message\AbstractRequest as BaseAbstractRequest;
 abstract class AbstractRequest extends BaseAbstractRequest
 {
     /**
-     * @var Braintree_Gateway
+     * @var \Braintree_Gateway
      */
     protected $braintree;
 

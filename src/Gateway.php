@@ -2,10 +2,9 @@
 
 namespace Omnipay\Braintree;
 
-use Braintree_Configuration;
-use Braintree_Gateway;
-use Braintree_WebhookNotification;
 use Omnipay\Common\AbstractGateway;
+use Braintree_Gateway;
+use Braintree_Configuration;
 use Guzzle\Http\ClientInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 /**
@@ -14,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 class Gateway extends AbstractGateway
 {
     /**
-     * @var Braintree_Gateway
+     * @var \Braintree_Gateway
      */
     protected $braintree;
 
@@ -283,13 +282,13 @@ class Gateway extends AbstractGateway
     /**
      * @param array $parameters
      *
-     * @return Braintree_WebhookNotification
+     * @return \Braintree_WebhookNotification
      *
-     * @throws \Braintree\Exception\InvalidSignature
+     * @throws \Braintree_Exception_InvalidSignature
      */
     public function parseNotification(array $parameters = array())
     {
-        return Braintree_WebhookNotification::parse(
+        return \Braintree_WebhookNotification::parse(
             $parameters['bt_signature'],
             $parameters['bt_payload']
         );
