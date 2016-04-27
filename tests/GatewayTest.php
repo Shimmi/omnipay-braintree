@@ -2,9 +2,9 @@
 
 namespace Omnipay\Braintree;
 
-use Braintree\Configuration;
-use Braintree\Digest;
-use Braintree\Version;
+use Braintree_Configuration;
+use Braintree_Digest;
+use Braintree_Version;
 use Omnipay\Tests\GatewayTestCase;
 
 class GatewayTest extends GatewayTestCase
@@ -154,10 +154,10 @@ class GatewayTest extends GatewayTestCase
 
     public function testParseNotification()
     {
-        if(Version::MAJOR >= 3) {
+        if(Braintree_Version::MAJOR >= 3) {
             $xml = '<notification></notification>';
             $payload = base64_encode($xml);
-            $signature = Digest::hexDigestSha1(Configuration::privateKey(), $payload);
+            $signature = Braintree_Digest::hexDigestSha1(Braintree_Configuration::privateKey(), $payload);
             $gatewayMock = $this->buildGatewayMock($payload);
             $gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest(), $gatewayMock);
             $params = array(
@@ -169,7 +169,7 @@ class GatewayTest extends GatewayTestCase
         } else {
             $xml = '<notification><subject></subject></notification>';
             $payload = base64_encode($xml);
-            $signature = Digest::hexDigestSha1(Configuration::privateKey(), $payload);
+            $signature = Braintree_Digest::hexDigestSha1(Braintree_Configuration::privateKey(), $payload);
             $gatewayMock = $this->buildGatewayMock($payload);
             $gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest(), $gatewayMock);
             $params = array(
@@ -188,7 +188,7 @@ class GatewayTest extends GatewayTestCase
      */
     protected function buildGatewayMock($payload)
     {
-        $configuration = $this->getMockBuilder('\Braintree\Configuration')
+        $configuration = $this->getMockBuilder('Braintree_Configuration')
             ->disableOriginalConstructor()
             ->setMethods(array(
                 'assertHasAccessTokenOrKeys'
@@ -202,7 +202,7 @@ class GatewayTest extends GatewayTestCase
 
         $configuration->setPublicKey($payload);
 
-        Configuration::$global = $configuration;
-        return Configuration::gateway();
+        Braintree_Configuration::$global = $configuration;
+        return Braintree_Configuration::gateway();
     }
 }

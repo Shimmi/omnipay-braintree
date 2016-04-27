@@ -2,9 +2,9 @@
 
 namespace Omnipay\Braintree;
 
-use Braintree\Configuration;
-use Braintree\Gateway as BraintreeGateway;
-use Braintree\WebhookNotification;
+use Braintree_Configuration;
+use Braintree_Gateway;
+use Braintree_WebhookNotification;
 use Omnipay\Common\AbstractGateway;
 use Guzzle\Http\ClientInterface;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request as HttpRequest;
 class Gateway extends AbstractGateway
 {
     /**
-     * @var BraintreeGateway
+     * @var Braintree_Gateway
      */
     protected $braintree;
 
@@ -23,11 +23,11 @@ class Gateway extends AbstractGateway
      *
      * @param ClientInterface $httpClient  A Guzzle client to make API calls with
      * @param HttpRequest     $httpRequest A Symfony HTTP request object
-     * @param BraintreeGateway $braintree The Braintree gateway
+     * @param Braintree_Gateway $braintree The Braintree gateway
      */
-    public function __construct(ClientInterface $httpClient = null, HttpRequest $httpRequest = null, BraintreeGateway $braintree = null)
+    public function __construct(ClientInterface $httpClient = null, HttpRequest $httpRequest = null, Braintree_Gateway $braintree = null)
     {
-        $this->braintree = $braintree ?: Configuration::gateway();
+        $this->braintree = $braintree ?: Braintree_Configuration::gateway();
 
         parent::__construct($httpClient, $httpRequest);
     }
@@ -283,13 +283,13 @@ class Gateway extends AbstractGateway
     /**
      * @param array $parameters
      *
-     * @return WebhookNotification
+     * @return Braintree_WebhookNotification
      *
      * @throws \Braintree\Exception\InvalidSignature
      */
     public function parseNotification(array $parameters = array())
     {
-        return WebhookNotification::parse(
+        return Braintree_WebhookNotification::parse(
             $parameters['bt_signature'],
             $parameters['bt_payload']
         );
