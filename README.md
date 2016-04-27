@@ -48,6 +48,49 @@ $response = $gateway->purchase([
 For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
 repository.
 
+## Token billing
+### Create card
+
+```php
+$card = new CreditCard();
+$card->setFirstName('Mike')
+    ->setLastName('Jones')
+    ->setEmail('mike.jones@example.com')
+    ->setExpiryMonth('05')
+    ->setExpiryYear('19')
+    // https://developers.braintreepayments.com/reference/general/testing/php#no-credit-card-errors
+    ->setNumber('4111111111111111')
+    // https://developers.braintreepayments.com/reference/general/testing/php#avs-and-cvv/cid-responses
+    ->setCvv('500');
+    
+$card = $gateway->createCard([
+    'customerReference' => 1337, // Braintree Customer ID
+    'card' => $card,
+])->send();
+
+// Get Braintree token of stored credit card
+$card->getCardReference();
+```
+
+### Update card
+Not yet implemented.
+
+### Delete card
+Not yet implemented.
+
+### Purchase through saved credit card
+```php
+$transaction = $gateway->purchase([
+    'amount' => 25.00,
+    'currency' => 'usd',
+    'customerReference' => 1337,
+    'cardReference' => 'Ax85s9',
+])->send();
+
+// Not yet implemented
+// $transaction->getTransactionReference();
+```
+
 ## Driver specific usage
 ### Create customer
 
@@ -59,6 +102,9 @@ $customer = $gateway->createCustomer([
         'lastName' => 'Doe'
     ]
 ])->send();
+
+// Get Braintree token of stored customer
+$customer->getCustomerReference();
 ```
 You can find full list of options [here](https://developers.braintreepayments.com/reference/request/customer/create/php).
 
