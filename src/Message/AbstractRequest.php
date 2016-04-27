@@ -336,6 +336,20 @@ abstract class AbstractRequest extends BaseAbstractRequest
         return $this->setParameter('paymentMethodToken', $value);
     }
 
+    /**
+     * Get card reference.
+     *
+     * As stated in Omnipay conventions:
+     * "transactionReference is the Payment Gateway’s reference to the transaction.""
+     * @see http://omnipay.thephpleague.com/gateways/build-your-own/
+     *
+     * @return string|null
+     */
+    public function setCardReference($value)
+    {
+        return $this->setParameter('paymentMethodToken', $value);
+    }
+
     public function getPaymentMethodNonce()
     {
         return $this->getToken();

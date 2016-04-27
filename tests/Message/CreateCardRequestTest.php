@@ -51,17 +51,29 @@ class CreateCardRequestTest extends TestCase
         $this->assertSame('Jones', $data['billingAddress']['lastName']);
     }
 
-//    @todo
-//    public function testRequestData()
-//    {
-//        $this->assertNull($this->request->getCardReference());
-//        $this->assertSame(
-//            array(
-//                'firstName' => 'Mike',
-//                'lastName' => 'Jones',
-//                'email' => 'mike.jones@example.com',
-//            ),
-//            $this->request->getCardData()
-//        );
-//    }
+    public function testRequestData()
+    {
+        $this->assertNull($this->request->getCardReference());
+        $this->assertSame(
+            array (
+                'customerId' => 'XY',
+                'number' => '4111111111111111',
+                'expirationMonth' => 5,
+                'expirationYear' => 2019,
+                'billingAddress' => array (
+                    'company' => null,
+                    'firstName' => 'Mike',
+                    'lastName' => 'Jones',
+                    'streetAddress' => null,
+                    'extendedAddress' => null,
+                    'locality' => null,
+                    'postalCode' => null,
+                    'region' => null,
+                    'countryName' => null,
+                ),
+                'cvv' => '500',
+            ),
+            $this->request->getCardData()
+        );
+    }
 }
