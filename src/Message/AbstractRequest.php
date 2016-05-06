@@ -411,22 +411,24 @@ abstract class AbstractRequest extends BaseAbstractRequest
             return array();
         }
 
+        $billingAddress = array(
+            'company' => $card->getBillingCompany(),
+            'firstName' => $card->getBillingFirstName(),
+            'lastName' => $card->getBillingLastName(),
+            'streetAddress' => $card->getBillingAddress1(),
+            'extendedAddress' =>  $card->getBillingAddress2(),
+            'locality' => $card->getBillingCity(),
+            'postalCode' => $card->getBillingPostcode(),
+            'region' => $card->getBillingState(),
+            'countryName' => $card->getBillingCountry(),
+        );
+
         $data = array(
             'customerId' => $this->getCustomerReference(),
             'number' => $card->getNumber(),
             'expirationMonth' => $card->getExpiryMonth(),
             'expirationYear' => $card->getExpiryYear(),
-            'billingAddress' => array(
-                'company' => $card->getBillingCompany(),
-                'firstName' => $card->getBillingFirstName(),
-                'lastName' => $card->getBillingLastName(),
-                'streetAddress' => $card->getBillingAddress1(),
-                'extendedAddress' =>  $card->getBillingAddress2(),
-                'locality' => $card->getBillingCity(),
-                'postalCode' => $card->getBillingPostcode(),
-                'region' => $card->getBillingState(),
-                'countryName' => $card->getBillingCountry(),
-            ),
+            'billingAddress' => array_filter($billingAddress),
         );
 
         if ($card->getCvv()) {
