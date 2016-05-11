@@ -33,8 +33,11 @@ class AuthorizeRequest extends AbstractRequest
             'shippingAddressId' => $this->getShippingAddressId(),
             'taxAmount' => $this->getTaxAmount(),
             'taxExempt' => $this->getTaxExempt(),
-            'billingAddress' => $this->getCardBillingAddress(),
         );
+
+        if ($billingAddress = $this->getCardBillingAddress()) {
+            $data['billingAddress'] = $billingAddress;
+        }
 
         // special validation
         if ($this->getPaymentMethodToken()) {
