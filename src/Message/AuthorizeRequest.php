@@ -8,6 +8,7 @@ use Omnipay\Common\Message\ResponseInterface;
  * Authorize Request
  *
  * @method Response send()
+ * @see https://developers.braintreepayments.com/reference/request/transaction/sale/php
  */
 class AuthorizeRequest extends AbstractRequest
 {
@@ -32,6 +33,7 @@ class AuthorizeRequest extends AbstractRequest
             'shippingAddressId' => $this->getShippingAddressId(),
             'taxAmount' => $this->getTaxAmount(),
             'taxExempt' => $this->getTaxExempt(),
+            'billingAddress' => $this->getCardBillingAddress(),
         );
 
         // special validation
@@ -39,8 +41,10 @@ class AuthorizeRequest extends AbstractRequest
             $data['paymentMethodToken'] = $this->getPaymentMethodToken();
         } elseif($this->getToken()) {
             $data['paymentMethodNonce'] = $this->getToken();
+        } elseif($this->getCard()) {
+            $data['creditCard'] = $this->getCardData();
         } else {
-            throw new InvalidRequestException("The token (payment nonce) or paymentMethodToken field should be set.");
+            throw new InvalidRequestException('The token (payment nonce), paymentMethodToken or card field should be set.');
         }
 
         // Remove null values
@@ -49,7 +53,6 @@ class AuthorizeRequest extends AbstractRequest
         });
 
         $data += $this->getOptionData();
-        $data += $this->getCardData();
         $data['options']['submitForSettlement'] = false;
 
         return $data;

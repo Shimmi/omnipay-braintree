@@ -400,10 +400,7 @@ abstract class AbstractRequest extends BaseAbstractRequest
         return $this->setParameter('verificationMerchantAccountId', $value);
     }
 
-    /**
-     * @return array
-     */
-    public function getCardData()
+    public function getCardBillingAddress()
     {
         $card = $this->getCard();
 
@@ -411,7 +408,7 @@ abstract class AbstractRequest extends BaseAbstractRequest
             return array();
         }
 
-        $billingAddress = array(
+        $data = array(
             'company' => $card->getBillingCompany(),
             'firstName' => $card->getBillingFirstName(),
             'lastName' => $card->getBillingLastName(),
@@ -423,17 +420,42 @@ abstract class AbstractRequest extends BaseAbstractRequest
             'countryName' => $card->getBillingCountry(),
         );
 
+        $data = array_filter($data, function($value){
+            return $value !== null;
+        });
+
+        return $data;
+    }
+    /**
+     * @return array
+     */
+    public function getCardData()
+    {
+        $card = $this->getCard();
+
+        if (!$card) {
+            return array();
+        }
+
         $data = array(
             'customerId' => $this->getCustomerReference(),
             'number' => $card->getNumber(),
             'expirationMonth' => $card->getExpiryMonth(),
             'expirationYear' => $card->getExpiryYear(),
-            'billingAddress' => array_filter($billingAddress),
         );
+
+        if ($billingAddress = array_filter($this->getCardBillingAddress())) {
+            $data['billingAddress'] = $billingAddress;
+        }
 
         if ($card->getCvv()) {
             $data['cvv'] = $card->getCvv();
         }
+
+        // Remove null values
+        $data = array_filter($data, function($value){
+            return $value !== null;
+        });
 
         return $data;
     }

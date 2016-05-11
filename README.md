@@ -26,7 +26,14 @@ The following gateways are provided by this package:
 
 You need to set your `merchantId`, `publicKey` and `privateKey`. Setting `testMode` to true will use the `sandbox` environment.
 
-This gateway supports purchase through a token (payment nonce) only. You can generate a clientToken for Javascript:
+This gateway supports purchase through a payment token (payment nonce), card reference ([token billing](http://omnipay.thephpleague.com/api/token-billing/)) and direct charges through [credit card](http://omnipay.thephpleague.com/api/charging/).
+
+For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
+repository.
+
+### Client token
+
+You can generate a clientToken for Javascript:
 
 ```php
 $clientToken = $gateway->clientToken()->send()->getToken();
@@ -45,10 +52,10 @@ $response = $gateway->purchase([
         ])->send();
 ```
 
-For general usage instructions, please see the main [Omnipay](https://github.com/thephpleague/omnipay)
-repository.
-
 ## Token billing
+
+Token billing allows you to store a credit card with your gateway, and charge it at a later date.
+
 ### Create card
 
 ```php
